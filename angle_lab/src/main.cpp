@@ -7,53 +7,33 @@
 
 
 int main() {
-    cout << "Running tests for the Angle class..." << endl;
-    cout << "=====================================" << endl;
+    std::cout << "Starting Angle Class Tests...\n" << std::endl;
     
-    try {
-        testCreationAndConversion();
-        testNormalization();
-        testComparison();
-        testArithmetic();
-        testEdgeCases();
-        testConversionMethods();
-        testDivisionByZero();
-        testOutputStream();
-        
-        cout << "\n=====================================" << endl;
-        cout << "All tests have been passed successfully" << endl;
-    } catch (const exception& e) {
-        cerr << "Error: " << e.what() << endl;
-        return 1;
-    } catch (...) {
-        cerr << "Unknown error" << endl;
-        return 1;
-    }
+    test_creation_and_conversion_methods();
+    test_normalization_functionality();
+    test_comparison_operators();
+    test_isEquivalent_method();
+    test_arithmetic_operations();
+    test_compound_assignment_operators();
+    test_float_operators();
+    test_edge_cases();
+    test_conversion_methods();
+    test_division_by_zero();
+    test_output_operations();
+    
+    std::cout << "\n=== All Angle Tests Completed Successfully! ===" << std::endl << std::endl;
 
-    cout << "Starting tests for AngleRange class..." << endl;
-    cout << "=======================================" << endl;
+    std::cout << "Starting tests for AngleRange class..." << std::endl;
+    std::cout << "=======================================" << std::endl;
     
-    try {
-        AngleRangeTestCreationAndBasicProperties();
-        AngleRangeTestBoundaryTypes();
-        AngleRangeTestComparisonOperators();
-        AngleRangeTestLengthCalculation();
-        AngleRangeTestContainsAngle();
-        AngleRangeTestRangeContainment();
-        AngleRangeTestNormalization();
-        AngleRangeTestOperatorPlus();
-        AngleRangeTestSpecialCases();
-        AngleRangeTestOutputStream();
-        AngleRangeTestBoundarySwapping();
-        
-        cout << "\n=======================================" << endl;
-        cout << "All tests passed successfully!" << endl;
-        return 0;
-    } catch (const exception& e) {
-        cerr << "Error: " << e.what() << endl;
-        return 1;
-    } catch (...) {
-        cerr << "Unknown error occurred" << endl;
-        return 1;
-    }
+    std::cout << "Starting AngleRange Tests...\n" << std::endl;
+    test_creation_methods();
+    angle_range_test_comparison_operators();
+    test_in_method();
+    test_addition_operator();
+    test_subtraction_operator();
+    test_vector_operations();
+    angle_range_test_edge_cases();
+    
+    std::cout << "\n=== All Tests Passed! ===" << std::endl;
 }

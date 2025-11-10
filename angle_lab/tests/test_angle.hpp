@@ -1,238 +1,298 @@
-#pragma once
+#include "angle.hpp"
+#include <cassert>
 #include <iostream>
 #include <cmath>
-#include <cassert>
-#include <string>
-#include <stdexcept>
-#include "angle.hpp"
+#include <vector>
 
-using namespace std;
-
-// Тестовые функции
-void testCreationAndConversion() {
-    cout << "=== Creation and Transformation test ===" << endl;
+void test_creation_and_conversion_methods() {
+    std::cout << "=== Testing Creation and Conversion Methods ===" << std::endl;
     
-    // Тест создания из градусов
+    // Test fromDegrees
+    std::cout << "Testing fromDegrees(180.0f) - expected: radians = " << Angle::Pi << std::endl;
     Angle a1 = Angle::fromDegrees(180.0f);
-    assert(fabs(a1.getAsDegrees() - 180.0f) < 0.001f);
-    assert(fabs(a1.getAsRadians() - Angle::Pi) < 0.001f);
-    cout << " 180 degrees = " << a1.getAsRadians() << " radians" << endl;
+    assert(std::fabs(a1.getAsRadians() - Angle::Pi) < Angle::epsilon);
+    std::cout << " Result: radians = " << a1.getAsRadians() << " - OK" << std::endl;
     
-    // Тест создания из радиан
-    Angle a2 = Angle::fromRadians(Angle::Pi / 2);
-    assert(fabs(a2.getAsDegrees() - 90.0f) < 0.001f);
-    cout << " pi/2 radians = " << a2.getAsDegrees() << " degrees" << endl;
+    // Test fromRadians
+    std::cout << "Testing fromRadians(" << Angle::Pi << ") - expected: degrees = 180.0" << std::endl;
+    Angle a2 = Angle::fromRadians(Angle::Pi);
+    assert(std::fabs(a2.getAsDegrees() - 180.0f) < Angle::epsilon);
+    std::cout << " Result: degrees = " << a2.getAsDegrees() << " - OK" << std::endl;
     
-    // Тест копирования
+    // Test copy constructor
+    std::cout << "Testing copy constructor - expected: identical angle values" << std::endl;
     Angle a3 = a1;
     assert(a3 == a1);
-    cout << "Copying is working correctly" << endl;
-    
-    // Тест методов вывода
-    cout << " printAsDegrees(): ";
-    a1.printAsDegrees();
-    
-    cout << " printAsRadians(): ";
-    a1.printAsRadians();
+    std::cout << " Result: original = " << a1.getAsRadians() << ", copy = " << a3.getAsRadians() << " - OK" << std::endl;
 }
 
-void testNormalization() {
-    cout << "\n=== Normalization test ===" << endl;
+void test_normalization_functionality() {
+    std::cout << "\n=== Testing Normalization Functionality ===" << std::endl;
     
-    // Углы больше 2pi
-    Angle a1 = Angle::fromRadians(3 * Angle::Pi);
-    Angle a2 = Angle::fromRadians(Angle::Pi);
-    assert(a1 == a2);
-    cout << " 3pi is normalized to pi" << endl;
+    // Test angles > 2pi (normalization function only, not automatic)
+    std::cout << "Testing normalize_angle(3*Pi) - expected: normalized to = Pi" << std::endl;
+    float normalized = Angle::normalize_angle(3 * Angle::Pi);
+    assert(std::fabs(normalized - Angle::Pi) < Angle::epsilon);
+    std::cout << " Result: 3*Pi normalized to " << normalized << " - OK" << std::endl;
     
-    // Отрицательные углы
-    Angle a3 = Angle::fromRadians(-Angle::Pi / 2);
-    Angle a4 = Angle::fromRadians(3 * Angle::Pi / 2);
-    assert(a3 == a4);
-    cout << " -pi/2 is normalized to 3pi/2 " << endl;
+    // Test negative angles
+    std::cout << "Testing normalize_angle(-Pi/2) - expected: normalized to = 3*Pi/2" << std::endl;
+    normalized = Angle::normalize_angle(-Angle::Pi / 2);
+    assert(std::fabs(normalized - (3 * Angle::Pi / 2)) < Angle::epsilon);
+    std::cout << " Result: -Pi/2 normalized to " << normalized << " - OK" << std::endl;
     
-    // Углы кратные 2pi
-    Angle a5 = Angle::fromRadians(4 * Angle::Pi);
-    Angle a6 = Angle::fromRadians(0.0f);
-    assert(a5 == a6);
-    cout << "4pi is normalized to 0" << endl;
-    
-    // Граничные значения
-    Angle a7 = Angle::fromRadians(2 * Angle::Pi);
-    Angle a8 = Angle::fromRadians(0.0f);
-    assert(a7 == a8);
-    cout << " 2pi is normalized to 0 " << endl;
+    // Test multiples of 2pi
+    std::cout << "Testing normalize_angle(4*Pi) - expected: normalized to = 0" << std::endl;
+    normalized = Angle::normalize_angle(4 * Angle::Pi);
+    assert(std::fabs(normalized - 0.0f) < Angle::epsilon);
+    std::cout << " Result: 4*Pi normalized to " << normalized << " - OK" << std::endl;
 }
 
-void testComparison() {
-    cout << "\n=== Comparison test ===" << endl;
+void test_comparison_operators() {
+    std::cout << "\n=== Testing Comparison Operators ===" << std::endl;
     
     Angle a1 = Angle::fromDegrees(45.0f);
     Angle a2 = Angle::fromDegrees(45.0f);
     Angle a3 = Angle::fromDegrees(90.0f);
     Angle a4 = Angle::fromDegrees(30.0f);
     
-    // Тест равенства
+    // Test operator==
+    std::cout << "Testing operator== with 45 and 45 - expected: true" << std::endl;
     assert(a1 == a2);
+    std::cout << " Result: " << (a1 == a2) << " - OK" << std::endl;
+    
+    std::cout << "Testing operator== with 45 and 90 - expected: false" << std::endl;
     assert(!(a1 == a3));
-    cout << " The == operator is working correctly " << endl;
+    std::cout << " Result: " << (a1 == a3) << " - OK" << std::endl;
     
-    // Тест неравенства
+    // Test operator!=
+    std::cout << "Testing operator!= with 45 and 90 - expected: true" << std::endl;
     assert(a1 != a3);
-    assert(!(a1 != a2));
-    cout << " The operator!= works correctly " << endl;
+    std::cout << " Result: " << (a1 != a3) << " - OK" << std::endl;
     
-    // Тест меньше
+    // Test operator<
+    std::cout << "Testing operator< with 30 and 45 - expected: true" << std::endl;
     assert(a4 < a1);
-    assert(a1 < a3);
-    assert(!(a3 < a1));
-    cout << " The < operator is working correctly " << endl;
+    std::cout << " Result: " << (a4 < a1) << " - OK" << std::endl;
     
-    // Тест больше
+    // Test operator>
+    std::cout << "Testing operator> with 90 and 45 - expected: true" << std::endl;
     assert(a3 > a1);
-    assert(a1 > a4);
-    assert(!(a4 > a1));
-    cout << " Operator > is working correctly " << endl;
+    std::cout << " Result: " << (a3 > a1) << " - OK" << std::endl;
     
-    // Тест меньше или равно
-    assert(a1 <= a2);
-    assert(a1 <= a3);
-    assert(!(a3 <= a1));
-    cout << " The <= operator is working correctly " << endl;
-    
-    // Тест больше или равно
-    assert(a1 >= a2);
-    assert(a3 >= a1);
-    assert(!(a4 >= a1));
-    cout << " The operator >= is working correctly " << endl;
+    // Test that 3pi ≠ pi (no automatic normalization)
+    std::cout << "Testing 3pi vs pi - expected: not equal (no auto-normalization)" << std::endl;
+    Angle pi = Angle::fromRadians(Angle::Pi);
+    Angle three_pi = Angle::fromRadians(3 * Angle::Pi);
+    assert(pi != three_pi);
+    std::cout << " Result: pi = " << pi.getAsRadians() << ", 3pi = " << three_pi.getAsRadians() << ", equal = " << (pi == three_pi) << " - OK" << std::endl;
 }
 
-void testArithmetic() {
-    cout << "\n=== Arithmetic operations test ===" << endl;
+void test_isEquivalent_method() {
+    std::cout << "\n=== Testing isEquivalent Method ===" << std::endl;
+    
+    // Test equivalent angles (modulo 2pi)
+    std::cout << "Testing isEquivalent with 45 and 405 - expected: true" << std::endl;
+    Angle a1 = Angle::fromDegrees(45.0f);
+    Angle a2 = Angle::fromDegrees(405.0f); // 405 = 45 after normalization
+    assert(a1.is_eq_with_2pi_mod(a2));
+    std::cout << " Result: " << a1.is_eq_with_2pi_mod(a2) << " - OK" << std::endl;
+    
+    // Test non-equivalent angles
+    std::cout << "Testing isEquivalent with 45 and 90 - expected: false" << std::endl;
+    Angle a3 = Angle::fromDegrees(90.0f);
+    assert(!a1.is_eq_with_2pi_mod(a3));
+    std::cout << " Result: " << a1.is_eq_with_2pi_mod(a3) << " - OK" << std::endl;
+    
+    // Test that isEquivalent differs from operator==
+    std::cout << "Testing that isEquivalent differs from operator== for 3pi and pi - expected: isEquivalent=true, operator==false" << std::endl;
+    Angle pi = Angle::fromRadians(Angle::Pi);
+    Angle three_pi = Angle::fromRadians(3 * Angle::Pi);
+    assert(three_pi.is_eq_with_2pi_mod(pi));
+    assert(!(three_pi == pi));
+    std::cout << " Result: isEquivalent=" << three_pi.is_eq_with_2pi_mod(pi) << ", operator==" << (three_pi == pi) << " - OK" << std::endl;
+}
+
+void test_arithmetic_operations() {
+    std::cout << "\n=== Testing Arithmetic Operations ===" << std::endl;
     
     Angle a1 = Angle::fromDegrees(30.0f);
     Angle a2 = Angle::fromDegrees(60.0f);
     
-    // Сложение
+    // Test addition
+    std::cout << "Testing operator+ with 30 + 60 - expected: 90" << std::endl;
     Angle sum = a1 + a2;
-    assert(fabs(sum.getAsDegrees() - 90.0f) < 0.001f);
-    cout << " 30 + 60 = " << sum.getAsDegrees() << "" << endl;
+    assert(std::fabs(sum.getAsDegrees() - 90.0f) < Angle::epsilon);
+    std::cout << " Result: " << sum.getAsDegrees() << " - OK" << std::endl;
     
-    // Вычитание
+    // Test subtraction
+    std::cout << "Testing operator- with 60 - 30 - expected: 30" << std::endl;
     Angle diff = a2 - a1;
-    assert(fabs(diff.getAsDegrees() - 30.0f) < 0.001f);
-    cout << " 60 - 30 = " << diff.getAsDegrees() << "" << endl;
+    assert(std::fabs(diff.getAsDegrees() - 30.0f) < Angle::epsilon);
+    std::cout << " Result: " << diff.getAsDegrees() << " - OK" << std::endl;
     
-    // Умножение на скаляр
+    // Test multiplication by scalar
+    std::cout << "Testing operator* with 30 * 2 - expected: 60" << std::endl;
     Angle multiplied = a1 * 2.0f;
-    assert(fabs(multiplied.getAsDegrees() - 60.0f) < 0.001f);
-    cout << " 30 * 2 = " << multiplied.getAsDegrees() << "" << endl;
+    assert(std::fabs(multiplied.getAsDegrees() - 60.0f) < Angle::epsilon);
+    std::cout << " Result: " << multiplied.getAsDegrees() << " - OK" << std::endl;
     
-    // Деление на скаляр
+    // Test division by scalar
+    std::cout << "Testing operator/ with 60 / 2 - expected: 30" << std::endl;
     Angle divided = a2 / 2.0f;
-    assert(fabs(divided.getAsDegrees() - 30.0f) < 0.001f);
-    cout << " 60 / 2 = " << divided.getAsDegrees() << "" << endl;
-    
-    // Составные операторы
-    Angle a3 = Angle::fromDegrees(10.0f);
-    a3 += a1;
-    assert(fabs(a3.getAsDegrees() - 40.0f) < 0.001f);
-    cout << " The += operator is working correctly " << endl;
-    
-    Angle a4 = Angle::fromDegrees(50.0f);
-    a4 -= a1;
-    assert(fabs(a4.getAsDegrees() - 20.0f) < 0.001f);
-    cout << " The -= operator is working correctly " << endl;
-    
-    Angle a5 = Angle::fromDegrees(15.0f);
-    a5 *= 3.0f;
-    assert(fabs(a5.getAsDegrees() - 45.0f) < 0.001f);
-    cout << " The *= operator is working correctly " << endl;
-    
-    Angle a6 = Angle::fromDegrees(90.0f);
-    a6 /= 3.0f;
-    assert(fabs(a6.getAsDegrees() - 30.0f) < 0.001f);
-    cout << " The /= operator is working correctly " << endl;
+    assert(std::fabs(divided.getAsDegrees() - 30.0f) < Angle::epsilon);
+    std::cout << " Result: " << divided.getAsDegrees() << " - OK" << std::endl;
 }
 
-void testEdgeCases() {
-    cout << "\n=== Boundary case test ===" << endl;
+void test_compound_assignment_operators() {
+    std::cout << "\n=== Testing Compound Assignment Operators ===" << std::endl;
     
-    // Нулевой угол
-    Angle zero = Angle::fromDegrees(0.0f);
+    // Test +=
+    std::cout << "Testing operator+= with 10 += 30 - expected: 40" << std::endl;
+    Angle a1 = Angle::fromDegrees(10.0f);
+    a1 += Angle::fromDegrees(30.0f);
+    assert(std::fabs(a1.getAsDegrees() - 40.0f) < Angle::epsilon);
+    std::cout << " Result: " << a1.getAsDegrees() << " - OK" << std::endl;
+    
+    // Test -=
+    std::cout << "Testing operator-= with 50 -= 30 - expected: 20" << std::endl;
+    Angle a2 = Angle::fromDegrees(50.0f);
+    a2 -= Angle::fromDegrees(30.0f);
+    assert(std::fabs(a2.getAsDegrees() - 20.0f) < Angle::epsilon);
+    std::cout << " Result: " << a2.getAsDegrees() << " - OK" << std::endl;
+    
+    // Test *=
+    std::cout << "Testing operator*= with 15 *= 3 - expected: 45" << std::endl;
+    Angle a3 = Angle::fromDegrees(15.0f);
+    a3 *= 3.0f;
+    assert(std::fabs(a3.getAsDegrees() - 45.0f) < Angle::epsilon);
+    std::cout << " Result: " << a3.getAsDegrees() << " - OK" << std::endl;
+    
+    // Test /=
+    std::cout << "Testing operator/= with 90 /= 3 - expected: 30" << std::endl;
+    Angle a4 = Angle::fromDegrees(90.0f);
+    a4 /= 3.0f;
+    assert(std::fabs(a4.getAsDegrees() - 30.0f) < Angle::epsilon);
+    std::cout << " Result: " << a4.getAsDegrees() << " - OK" << std::endl;
+}
+
+void test_float_operators() {
+    std::cout << "\n=== Testing Float Operators ===" << std::endl;
+    
+    Angle a1 = Angle::fromRadians(1.0f);
+    
+    // Test operator+ with float
+    std::cout << "Testing operator+ with angle + 1.0 rad - expected: 2.0 rad" << std::endl;
+    Angle result1 = a1 + 1.0f;
+    assert(std::fabs(result1.getAsRadians() - 2.0f) < Angle::epsilon);
+    std::cout << " Result: " << result1.getAsRadians() << " rad - OK" << std::endl;
+    
+    // Test operator+= with float
+    std::cout << "Testing operator+= with angle += 0.5 rad - expected: 1.5 rad" << std::endl;
+    Angle a2 = Angle::fromRadians(1.0f);
+    a2 += 0.5f;
+    assert(std::fabs(a2.getAsRadians() - 1.5f) < Angle::epsilon);
+    std::cout << " Result: " << a2.getAsRadians() << " rad - OK" << std::endl;
+    
+    // Test that operations don't auto-normalize
+    std::cout << "Testing that 2pi + pi doesn't auto-normalize - expected: 3pi" << std::endl;
+    Angle two_pi = Angle::fromRadians(2 * Angle::Pi);
+    Angle pi = Angle::fromRadians(Angle::Pi);
+    Angle result = two_pi + pi;
+    assert(std::fabs(result.getAsRadians() - 3 * Angle::Pi) < Angle::epsilon);
+    std::cout << " Result: " << result.getAsRadians() / Angle::Pi << "pi - OK" << std::endl;
+}
+
+void test_edge_cases() {
+    std::cout << "\n=== Testing Edge Cases ===" << std::endl;
+    
+    // Test zero angle
+    std::cout << "Testing zero angle creation - expected: 0 radians" << std::endl;
+    Angle zero1 = Angle::fromDegrees(0.0f);
     Angle zero2 = Angle::fromRadians(0.0f);
-    assert(zero == zero2);
-    cout << " The zero angle is working correctly " << endl;
+    assert(zero1 == zero2);
+    std::cout << " Result: both zero angles are equal - OK" << std::endl;
     
-    // Полный круг
-    Angle full1 = Angle::fromDegrees(360.0f);
-    Angle full2 = Angle::fromDegrees(0.0f);
-    assert(full1 == full2);
-    cout << " 360 is normalized to 0 " << endl;
+    // Test that 360 ≠ 0 (no auto-normalization)
+    std::cout << "Testing 360 angle - expected: not equal to 0 (no auto-normalization)" << std::endl;
+    Angle full = Angle::fromDegrees(360.0f);
+    assert(full != zero1);
+    std::cout << " Result: 360 = " << full.getAsRadians() << ", 0 = " << zero1.getAsRadians() << ", equal = " << (full == zero1) << " - OK" << std::endl;
     
-    // Большие углы
+    // Test large angles (no normalization)
+    std::cout << "Testing 720 angle - expected: not equal to 0" << std::endl;
     Angle big = Angle::fromDegrees(720.0f);
-    assert(big == zero);
-    cout << " 720 is normalized to 0 " << endl;
-    
-    // Очень большие углы
-    Angle very_big = Angle::fromDegrees(1080.0f);
-    assert(very_big == zero);
-    cout << " 1080 is normalized to 0 " << endl;
-    
-    // Очень маленькие углы
-    Angle small = Angle::fromDegrees(-360.0f);
-    assert(small == zero);
-    cout << " -360 is normalized to 0 " << endl;
+    assert(big != zero1);
+    std::cout << " Result: 720 = " << big.getAsRadians() << ", equal to 0 = " << (big == zero1) << " - OK" << std::endl;
 }
 
-void testConversionMethods() {
-    cout << "\n=== Test of conversion methods ===" << endl;
+void test_conversion_methods() {
+    std::cout << "\n=== Testing Conversion Methods ===" << std::endl;
     
-    Angle a1 = Angle::fromDegrees(45.0f);
+    Angle a1 = Angle::fromRadians(2.0f);
     
-    // to_string
-    string str = a1.to_string();
-    cout << " to_string(): " << str << endl;
+    // Test to_string
+    std::cout << "Testing to_string() - expected: non-empty string" << std::endl;
+    std::string str = a1.to_string();
+    assert(!str.empty());
+    std::cout << " Result: '" << str << "' - OK" << std::endl;
     
-    // to_int
-    int int_val = a1.to_int();
-    cout << " to_int(): " << int_val << endl;
+    // Test to_int
+    std::cout << "Testing to_int() with 2.7 rad - expected: 2" << std::endl;
+    Angle a2 = Angle::fromRadians(2.7f);
+    int int_val = a2.to_int();
+    assert(int_val == 2);
+    std::cout << " Result: " << int_val << " - OK" << std::endl;
     
-    // to_float
+    // Test to_float
+    std::cout << "Testing to_float() - expected: original radian value" << std::endl;
     float float_val = a1.to_float();
-    cout << " to_float(): " << float_val << endl;
+    assert(std::fabs(float_val - 2.0f) < Angle::epsilon);
+    std::cout << " Result: " << float_val << " - OK" << std::endl;
 }
 
-void testDivisionByZero() {
-    cout << "\n=== The division by zero test ===" << endl;
+void test_division_by_zero() {
+    std::cout << "\n=== Testing Division by Zero ===" << std::endl;
     
     Angle a1 = Angle::fromDegrees(90.0f);
     bool caught_exception = false;
     
+    // Test operator/ with zero
+    std::cout << "Testing operator/ with divisor 0 - expected: exception" << std::endl;
     try {
         Angle result = a1 / 0.0f;
-    } catch (const invalid_argument& e) {
+    } catch (const std::invalid_argument& e) {
         caught_exception = true;
-        cout << " Exception caught: " << e.what() << endl;
+        std::cout << " Result: exception caught - '" << e.what() << "' - OK" << std::endl;
     }
-    
     assert(caught_exception);
     
+    // Test operator/= with zero
     caught_exception = false;
+    std::cout << "Testing operator/= with divisor 0 - expected: exception" << std::endl;
     try {
         a1 /= 0.0f;
-    } catch (const invalid_argument& e) {
+    } catch (const std::invalid_argument& e) {
         caught_exception = true;
-        cout << " Exception caught (operator /=): " << e.what() << endl;
+        std::cout << " Result: exception caught - '" << e.what() << "' - OK" << std::endl;
     }
-    
     assert(caught_exception);
 }
 
-void testOutputStream() {
-    cout << "\n=== The Output operator test ===" << endl;
+void test_output_operations() {
+    std::cout << "\n=== Testing Output Operations ===" << std::endl;
     
     Angle a1 = Angle::fromRadians(Angle::Pi);
-    cout << " Operator <<: " << a1 << endl;
+    
+    // Test operator<<
+    std::cout << "Testing operator<< with pi radians - expected: formatted output" << std::endl;
+    std::cout << " Result: " << a1 << " - OK" << std::endl;
+    
+    // Test printAsDegrees
+    std::cout << "Testing printAsDegrees() - output: ";
+    a1.printAsDegrees();
+    
+    // Test printAsRadians
+    std::cout << "Testing printAsRadians() - output: ";
+    a1.printAsRadians();
 }

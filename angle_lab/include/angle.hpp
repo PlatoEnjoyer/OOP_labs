@@ -12,8 +12,8 @@ private:
 
     explicit Angle(float radians) : angle_radian_val(radians) {};
 public:
-    static constexpr float Pi = 3.1415;
-    static constexpr float epsilon = 0.0001;
+    static constexpr float Pi = 3.1415f;
+    static constexpr float epsilon = 0.0001f;
     
     static Angle fromDegrees(float degrees) {
         return Angle(degrees * Pi/180);
@@ -25,7 +25,7 @@ public:
 
     Angle(const Angle& other) : angle_radian_val(other.angle_radian_val) {};
 
-    float getAsDegrees() {
+    float getAsDegrees() const {
         return angle_radian_val * 180.0 / Pi;
     }
 
@@ -54,12 +54,16 @@ public:
         return result;
     }
 
+    bool is_eq_with_2pi_mod(const Angle& other) const {
+        return std::fabs(normalize_angle(this->angle_radian_val) - normalize_angle(other.angle_radian_val)) < epsilon; 
+    }
+
     bool operator==(const Angle& other) const {
-        return (std::fabs(normalize_angle(this->angle_radian_val) - normalize_angle(other.angle_radian_val)) < epsilon); 
+        return std::fabs((this->angle_radian_val) - (other.angle_radian_val)) < epsilon; 
     }
 
     bool operator<(const Angle& other) const {
-        return !(*this == other) && normalize_angle(this->angle_radian_val) < normalize_angle(other.angle_radian_val);
+        return !(*this == other) && this->angle_radian_val < other.angle_radian_val;
     }
 
     bool operator!=(const Angle& other) const {
@@ -67,7 +71,7 @@ public:
     }
 
     bool operator>(const Angle& other) const {
-        return !(*this == other) && (normalize_angle(this->angle_radian_val) > normalize_angle(other.angle_radian_val));
+        return !(*this == other) && this->angle_radian_val > other.angle_radian_val;
     }
 
     bool operator>=(const Angle& other) const {
@@ -78,15 +82,15 @@ public:
         return (*this == other) || (*this < other);
     }
 
-    std::string to_string() {
+    std::string to_string() const {
         return std::to_string(this->angle_radian_val);
     }
 
-    int to_int() {
+    int to_int() const {
         return (int)this->angle_radian_val;
     }
 
-    float to_float() {
+    float to_float() const {
         return this->angle_radian_val;
     }
 
