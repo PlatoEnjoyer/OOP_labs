@@ -1,0 +1,10 @@
+[INFO] [2025.11.20 14:34:31.253] This is important information message for testing
+[WARN] [2025.11.20 14:34:31.259] This is important warning about possible problem
+[ERROR] [2025.11.20 14:34:31.260] This is important error message for demonstration
+[INFO] [2025.11.20 14:34:31.261] This message will be processed (filters are simplified)
+[INFO] [2025.11.20 14:34:31.262] Message with important keyword will be processed
+[INFO] [2025.11.20 14:41:39.925] This is important information message for testing
+[WARN] [2025.11.20 14:41:39.927] This is important warning about possible problem
+[ERROR] [2025.11.20 14:41:39.928] This is important error message for demonstration
+[INFO] [2025.11.20 14:41:39.929] This message will be processed (filters are simplified)
+[INFO] [2025.11.20 14:41:39.931] Message with important keyword will be processed

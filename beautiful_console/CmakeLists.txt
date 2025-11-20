@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(BeautifulConsole CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
+set(FONTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/fonts)
+
+if(NOT EXISTS ${FONTS_DIR})
+    message(FATAL_ERROR "Директория не найдена: ${FONTS_DIR}")
+endif()
+
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE HEADERS "include/*.hpp")
+
+add_executable(BeautifulConsole ${SOURCES} ${HEADERS})
+
+target_compile_definitions(BeautifulConsole PRIVATE 
+    FONTS_DIR="${FONTS_DIR}"
+)
+
+source_group("Sources" FILES ${SOURCES})
+source_group("Headers" FILES ${HEADERS})
+target_include_directories(BeautifulConsole PRIVATE include)

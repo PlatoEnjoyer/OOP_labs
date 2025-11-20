@@ -1,0 +1,10 @@
+^C:\USERS\USER\DESKTOP\OOP_LABS\BEAUTIFUL_CONSOLE\BUILD\CMAKEFILES\7A180DB7D745A4AF8F7B6A72FD1EDAF4\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/Desktop/oop_labs/beautiful_console -BC:/Users/user/Desktop/oop_labs/beautiful_console/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/user/Desktop/oop_labs/beautiful_console/build/BeautifulConsole.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
