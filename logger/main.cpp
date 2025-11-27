@@ -10,7 +10,6 @@
 #include <locale>
 #include <codecvt>
 
-// 1. Перечислитель LogLevel
 enum class LogLevel {
     INFO,
     WARN,
@@ -27,16 +26,16 @@ std::string logLevelToString(LogLevel level) {
     }
 }
 
-// 2. Абстрактный класс фильтров
+// Абстрактный класс фильтров
 class ILogFilter {
 public:
     virtual ~ILogFilter() = default;
     virtual bool match(LogLevel log_level, const std::string& text) = 0;
 };
 
-// 3. Реализации фильтров
 
-// SimpleLogFilter - фильтрация по вхождению текста
+
+// фильтрация по вхождению текста
 class SimpleLogFilter : public ILogFilter {
 private:
     std::string pattern_;
@@ -48,7 +47,7 @@ public:
     }
 };
 
-// ReLogFilter - фильтрация по регулярному выражению
+// фильтрация по регулярному выражению
 class ReLogFilter : public ILogFilter {
 private:
     std::regex pattern_;
@@ -60,7 +59,7 @@ public:
     }
 };
 
-// LevelFilter - фильтрация по уровню логирования
+// фильтрация по уровню логирования
 class LevelFilter : public ILogFilter {
 private:
     LogLevel min_level_;
@@ -72,21 +71,21 @@ public:
     }
 };
 
-// 4. Абстрактный класс обработчиков
+// Абстрактный класс обработчиков
 class ILogHandler {
 public:
     virtual ~ILogHandler() = default;
     virtual void handle(LogLevel log_level, const std::string& text) = 0;
 };
 
-// 6. Абстрактный класс форматтеров
+// Абстрактный класс форматтеров
 class ILogFormatter {
 public:
     virtual ~ILogFormatter() = default;
     virtual std::string format(LogLevel log_level, const std::string& text) = 0;
 };
 
-// 7. Реализация форматтера с временной меткой
+// Реализация форматтера с временной меткой
 class TimestampFormatter : public ILogFormatter {
 public:
     std::string format(LogLevel log_level, const std::string& text) override {
@@ -103,9 +102,8 @@ public:
     }
 };
 
-// 5. Реализации обработчиков
 
-// ConsoleHandler - вывод в консоль
+// вывод в консоль
 class ConsoleHandler : public ILogHandler {
 private:
     std::string getColorCode(LogLevel level) {
@@ -123,7 +121,7 @@ public:
     }
 };
 
-// FileHandler - запись в файл
+// запись в файл
 class FileHandler : public ILogHandler {
 private:
     std::ofstream file_;
@@ -145,7 +143,7 @@ public:
     }
 };
 
-// SocketHandler - имитация отправки через сокет
+// имитация отправки через сокет
 class SocketHandler : public ILogHandler {
 private:
     std::string address_;
@@ -159,7 +157,7 @@ public:
     }
 };
 
-// SyslogHandler - имитация записи в системные логи
+// имитация записи в системные логи
 class SyslogHandler : public ILogHandler {
 public:
     void handle(LogLevel log_level, const std::string& text) override {
@@ -167,7 +165,7 @@ public:
     }
 };
 
-// FtpHandler - имитация записи на FTP сервер
+// имитация записи на FTP сервер
 class FtpHandler : public ILogHandler {
 private:
     std::string server_;
@@ -181,7 +179,7 @@ public:
     }
 };
 
-// 8. Основной класс Logger
+// Основной класс
 class Logger {
 private:
     std::vector<std::unique_ptr<ILogFilter>> filters_;
@@ -239,14 +237,9 @@ public:
 };
 
 
-// 9. Демонстрация работы системы
 int main() {
-    // Настройка кодировки консоли
-    
-    // Создаем логгер
     Logger logger;
     
-    // Добавляем фильтры (комментируем некоторые для демонстрации)
     logger.addFilter(std::make_unique<LevelFilter>(LogLevel::INFO)); // Фильтр по уровню
     // logger.addFilter(std::make_unique<SimpleLogFilter>("important")); // Фильтр по тексту
     // logger.addFilter(std::make_unique<ReLogFilter>("(error|warning|info)")); // Фильтр по regex

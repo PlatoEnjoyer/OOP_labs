@@ -1,0 +1,10 @@
+^C:\USERS\USER\DESKTOP\OOP_LABS\EVENT_HANDLER\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/Desktop/oop_labs/event_handler -BC:/Users/user/Desktop/oop_labs/event_handler/build --check-stamp-file C:/Users/user/Desktop/oop_labs/event_handler/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
